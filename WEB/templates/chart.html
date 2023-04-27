@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>智能加湿可视化</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.0.2/echarts.common.js"></script>
+</head>
+<body>
+    <div id="chart" style="width: 100%; height: 500px;"></div>
+    <script>
+        // 从后端传递的数据
+        const sensor_data = {{ sensor_data | safe }};
+
+        // 初始化ECharts实例
+        let myChart = echarts.init(document.getElementById('chart'));
+
+        // 配置选项
+        let option = {
+            title: {
+                text: '传感器信息'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['温度', '湿度', '水位', 'WiFi状态', '喷雾状态']
+            },
+            xAxis: {
+                type: 'category',
+                data: sensor_data.id
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name: '温度',
+                    type: 'line',
+                    data: sensor_data.temperature
+                },
+                {
+                    name: '湿度',
+                    type: 'line',
+                    data: sensor_data.humidity
+                },
+                {
+                    name: '水位',
+                    type: 'line',
+                    data: sensor_data.water_level
+                },
+                {
+                    name: 'WiFi状态',
+                    type: 'line',
+                    data: sensor_data.wifi_status
+                },
+                {
+                    name: '喷雾状态',
+                    type: 'line',
+                    data: sensor_data.spray_status
+                }
+            ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    </script>
+</body>
+</html>
