@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "rest_framework",
     "rest_framework.authtoken",
+    "corsheaders",
     "dj_rest_auth",
     "dj_rest_auth.registration",
     "app"
@@ -53,6 +54,7 @@ SITE_ID = 1
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     # "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -138,3 +140,29 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SIMPLEUI_HOME_INFO = False  # 隐藏右侧SimpleUI广告
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+# 跨域增加忽略
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_METHODS = (
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'VIEW',
+)
+
+CORS_ALLOW_HEADERS = (
+    'XMLHttpRequest',
+    'X_FILENAME',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'Pragma',
+)
