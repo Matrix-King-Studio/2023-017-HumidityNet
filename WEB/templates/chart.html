@@ -7,63 +7,90 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.0.2/echarts.common.js"></script>
 </head>
 <body>
-    <div id="chart" style="width: 100%; height: 500px;"></div>
-    <script>
-        // 从后端传递的数据
-        const sensor_data = {{ sensor_data | safe }};
+<div id="chart" style="width: 100%; height: 500px;"></div>
+<div>
+    <label for="spray_status">选择喷雾状态：</label>
+    <select id="spray_status" name="spray_status">
+        <option value="2">自动</option>
+        <option value="1">开启</option>
+        <option value="0">关闭</option>
+    </select>
+    <button onclick="changeSprayStatus()">确认</button>
+</div>
+<script>
+    // 从后端传递的数据
+    const sensor_data = {{ sensor_data | safe }};
 
-        // 初始化ECharts实例
-        let myChart = echarts.init(document.getElementById('chart'));
+    // 初始化ECharts实例
+    let myChart = echarts.init(document.getElementById('chart'));
 
-        // 配置选项
-        let option = {
-            title: {
-                text: '传感器信息'
+    // 配置选项
+    let option = {
+        title: {
+            text: '传感器信息'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['温度', '湿度', '水位', 'WiFi状态', '喷雾状态']
+        },
+        xAxis: {
+            type: 'category',
+            data: sensor_data.id
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '温度',
+                type: 'line',
+                data: sensor_data.temperature
             },
-            tooltip: {
-                trigger: 'axis'
+            {
+                name: '湿度',
+                type: 'line',
+                data: sensor_data.humidity
             },
-            legend: {
-                data: ['温度', '湿度', '水位', 'WiFi状态', '喷雾状态']
+            {
+                name: '水位',
+                type: 'line',
+                data: sensor_data.water_level
             },
-            xAxis: {
-                type: 'category',
-                data: sensor_data.id
+            {
+                name: 'WiFi状态',
+                type: 'line',
+                data: sensor_data.wifi_status
             },
-            yAxis: {
-                type: 'value'
-            },
-            series: [
-                {
-                    name: '温度',
-                    type: 'line',
-                    data: sensor_data.temperature
-                },
-                {
-                    name: '湿度',
-                    type: 'line',
-                    data: sensor_data.humidity
-                },
-                {
-                    name: '水位',
-                    type: 'line',
-                    data: sensor_data.water_level
-                },
-                {
-                    name: 'WiFi状态',
-                    type: 'line',
-                    data: sensor_data.wifi_status
-                },
-                {
-                    name: '喷雾状态',
-                    type: 'line',
-                    data: sensor_data.spray_status
-                }
-            ]
-        };
+            {
+                name: '喷雾状态',
+                type: 'line',
+                data: sensor_data.spray_status
+            }
+        ]
+    };
 
-        // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(option);
-    </script>
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+    function changeSprayStatus() {
+        const selectedStatus = document.getElementById("spray_status").value;
+        $.ajax({
+            url: "http://127.0.0.1:8000/api/sensor/change_spray_status/",
+            type: "POST",
+            data: {
+                spray_status: selectedStatus
+            },
+            success: function (response) {
+                console.log(response);
+                location.reload();
+            },
+            error: function (xhr) {
+                console.log(xhr.responseText);
+            }
+        });
+    }
+</script>
 </body>
 </html>
